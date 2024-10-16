@@ -1,16 +1,29 @@
-import axios from 'axios';
+import { useEffect, useState } from "react";
 
-const API_KEY = 'YOUR_TMDB_API_KEY'; // Ganti dengan API Key Anda
-const BASE_URL = 'https://api.themoviedb.org/3';
+const API_KEY = import.meta.env.VITE_API_KEY; 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// Ambil film yang sedang diputar (Now Playing)
-export const getNowPlayingMovies = async (limit: number = 6) => {
-  const response = await axios.get(`${BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1`);
-  return response.data.results.slice(0, limit);
+export const fetchMovieDetails = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+    return null;
+  }
 };
 
-// Ambil film populer dengan pagination
-export const getPopularMovies = async (page: number = 1) => {
-  const response = await axios.get(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=${page}`);
-  return response.data.results;
+export const fetchMovie =  () => {
+ const [data, setData] = useState([])
+  useEffect(() =>{
+const response = fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`).then(response => (response.json())).then(response => {
+  console.log(response)
+  setData(response)
+})
+  },[])
+  return data
 };
+
+
+
